@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.dao.StudentDao">
+    <!--定义sql动态语句-->
+    <sql id="sql">id,name,email,age</sql>
+
+    <resultMap id="myMap" type="com.bjpowernode.domain.Student">
+        <!--column 是列名  property是java对象的属性名-->
+        <id column="id" property="id"/>
+        <result column="name" property="email"/>
+        <result column="email" property="name"/>
+        <result column="age" property="age"/>
+
+    </resultMap>
+
+    <!--添加信息-->
+    <insert id="insertStudent">
+        insert into student values (#{id},#{name},#{email},#{age});
+    </insert>
+    <!--根据id删除信息-->
+    <delete id="deleteStudent">
+        delete from student where id=#{myId}
+    </delete>
+    <!--查询 分页查询-->
+    <select id="selectStudentH" resultType="com.bjpowernode.domain.Student">
+        select <include refid="sql"/> from student
+    </select>
+    <!--if和where的使用-->
+    <select id="selectStudentIW" resultType="com.bjpowernode.domain.Student">
+        select <include refid="sql"/> from student
+        <where>
+            <if test="name!=null and name != ''">
+                name=#{name}
+            </if>
+            <if test="age>0">
+              and  age = #{age}
+            </if>
+        </where>
+    </select>
+    <!--列名和属性名 对应关系的使用-->
+    <select id="selectStudentLS" resultMap="myMap">
+        select <include refid="sql"/> from student
+    </select>
+
+    <!--foreach的使用-->
+    <select id="selectStudentForeach" resultType="com.bjpowernode.domain.Student">
+        select <include refid="sql"/> from student where id in
+        <foreach collection="list" item="mylist" open="(" close=")" separator=",">
+            #{mylist}
+        </foreach>
+    </select>
+</mapper>
